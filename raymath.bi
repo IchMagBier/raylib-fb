@@ -15,12 +15,12 @@ type float16
     v(0 to 15) as single
 end type
 
-private function Clamp(byval value as single, byval min as single, byval max as single) as single
+private function Clamp(value as single, min as single, max as single) as single
     dim res as const single = iif(value < min, min, value)
     return iif(res > max, max, res)
 end function
 
-private function Lerp(byval start as single, byval ends as single, byval amount as single) as single
+private function Lerp(start as single, ends as single, amount as single) as single
     return start + (amount * (ends - start))
 end function
 
@@ -34,32 +34,32 @@ private function Vector2One() as Vector2
     return result
 end function
 
-private function Vector2Add(byval v1 as Vector2, byval v2 as Vector2) as Vector2
+private function Vector2Add(v1 as Vector2, v2 as Vector2) as Vector2
     dim as Vector2 result = Vector2(v1.x + v2.x, v1.y + v2.y)
     return result
 end function
 
-private function Vector2Subtract(byval v1 as Vector2, byval v2 as Vector2) as Vector2
+private function Vector2Subtract(v1 as Vector2, v2 as Vector2) as Vector2
     dim as Vector2 result = Vector2(v1.x - v2.x, v1.y - v2.y)
     return result
 end function
 
-private function Vector2Length(byval v as Vector2) as single
+private function Vector2Length(v as Vector2) as single
     dim result as single = sqrtf((v.x * v.x) + (v.y * v.y))
     return result
 end function
 
-private function Vector2DotProduct(byval v1 as Vector2, byval v2 as Vector2) as single
+private function Vector2DotProduct(v1 as Vector2, v2 as Vector2) as single
     dim result as single = (v1.x * v2.x) + (v1.y * v2.y)
     return result
 end function
 
-private function Vector2Distance(byval v1 as Vector2, byval v2 as Vector2) as single
+private function Vector2Distance(v1 as Vector2, v2 as Vector2) as single
     dim result as single = sqrtf(((v1.x - v2.x) * (v1.x - v2.x)) + ((v1.y - v2.y) * (v1.y - v2.y)))
     return result
 end function
 
-private function Vector2Angle(byval v1 as Vector2, byval v2 as Vector2) as single
+private function Vector2Angle(v1 as Vector2, v2 as Vector2) as single
     dim result as single = atan2f(v2.y - v1.y, v2.x - v1.x) * (180.0 / 3.14159265358979323846)
     if result < 0 then
         result += 360.0
@@ -67,44 +67,44 @@ private function Vector2Angle(byval v1 as Vector2, byval v2 as Vector2) as singl
     return result
 end function
 
-private function Vector2Scale(byval v as Vector2, byval scale as single) as Vector2
+private function Vector2Scale(v as Vector2, scale as single) as Vector2
     dim as Vector2 result = Vector2(v.x*scale, v.y*scale)
     return result
 end function
 
-private function Vector2MultiplyV(byval v1 as Vector2, byval v2 as Vector2) as Vector2
+private function Vector2MultiplyV(v1 as Vector2, v2 as Vector2) as Vector2
     dim as Vector2 result = Vector2(v1.x*v2.x, v1.y*v2.y)
     return result
 end function
 
-private function Vector2Negate(byval v as Vector2) as Vector2
+private function Vector2Negate(v as Vector2) as Vector2
     dim as Vector2 result = Vector2(-v.x, -v.y)
     return result
 end function
 
-private function Vector2Divide(byval v as Vector2, byval div as single) as Vector2
+private function Vector2Divide(v as Vector2, div as single) as Vector2
     dim as Vector2 result = Vector2(v.x/div, v.y/div)
     return result
 end function
 
-private function Vector2DivideV(byval v1 as Vector2, byval v2 as Vector2) as Vector2
+private function Vector2DivideV(v1 as Vector2, v2 as Vector2) as Vector2
     dim as Vector2 result = Vector2(v1.x/v2.x, v1.y/v2.y)
     return result
 end function
 
-private function Vector2Normalize(byval v as Vector2) as Vector2
+private function Vector2Normalize(v as Vector2) as Vector2
     dim as Vector2 result = Vector2Divide(v, Vector2Length(v))
     return result
 end function
 
-private function Vector2Lerp(byval v1 as Vector2, byval v2 as Vector2, byval amount as single) as Vector2
+private function Vector2Lerp(v1 as Vector2, v2 as Vector2, amount as single) as Vector2
     dim as Vector2 result
     result.x = v1.x + (amount * (v2.x - v1.x))
     result.y = v1.y + (amount * (v2.y - v1.y))
     return result
 end function
 
-private function Vector2Rotate(byval v as Vector2, byval degs as single) as Vector2
+private function Vector2Rotate(v as Vector2, degs as single) as Vector2
     dim rads as single = degs * (3.14159265358979323846 / 180.0)
     dim as Vector2 result = Vector2(v.x * cos(rads) - v.y * sin(rads) , v.x * sin(rads) + v.y * cos(rads))
     return result
@@ -120,32 +120,32 @@ private function Vector3One() as Vector3
     return result
 end function
 
-private function Vector3Add(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3Add(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result = Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z)
     return result
 end function
 
-private function Vector3Subtract(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3Subtract(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result = Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
     return result
 end function
 
-private function Vector3Scale(byval v as Vector3, byval scalar as single) as Vector3
+private function Vector3Scale(v as Vector3, scalar as single) as Vector3
     dim as Vector3 result = Vector3(v.x*scalar, v.y*scalar, v.z*scalar)
     return result
 end function
 
-private function Vector3Multiply(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3Multiply(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result = Vector3(v1.x*v2.x, v1.y*v2.y, v1.z*v2.z)
     return result
 end function
 
-private function Vector3CrossProduct(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3CrossProduct(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result = Vector3(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x)
     return result
 end function
 
-private function Vector3Perpendicular(byval v as Vector3) as Vector3
+private function Vector3Perpendicular(v as Vector3) as Vector3
     dim as Vector3 result
     dim min as single = csng(fabs(v.x))
     dim as Vector3 cardinalAxis = Vector3(1,0,0)
@@ -162,17 +162,17 @@ private function Vector3Perpendicular(byval v as Vector3) as Vector3
     return result
 end function
 
-private function Vector3Length(byval v as const Vector3) as single
+private function Vector3Length(v as const Vector3) as single
     dim result as single = sqrtf(((v.x * v.x) + (v.y * v.y)) + (v.z * v.z))
     return result
 end function
 
-private function Vector3DotProduct(byval v1 as Vector3, byval v2 as Vector3) as single
+private function Vector3DotProduct(v1 as Vector3, v2 as Vector3) as single
     dim result as single = ((v1.x * v2.x) + (v1.y * v2.y)) + (v1.z * v2.z)
     return result
 end function
 
-private function Vector3Distance(byval v1 as Vector3, byval v2 as Vector3) as single
+private function Vector3Distance(v1 as Vector3, v2 as Vector3) as single
     dim dx as single = v2.x - v1.x
     dim dy as single = v2.y - v1.y
     dim dz as single = v2.z - v1.z
@@ -180,22 +180,22 @@ private function Vector3Distance(byval v1 as Vector3, byval v2 as Vector3) as si
     return result
 end function
 
-private function Vector3Negate(byval v as Vector3) as Vector3
+private function Vector3Negate(v as Vector3) as Vector3
     dim as Vector3 result = Vector3(-v.x, -v.y, -v.z)
     return result
 end function
 
-private function Vector3Divide(byval v as Vector3, byval div as single) as Vector3
+private function Vector3Divide(v as Vector3, div as single) as Vector3
     dim as Vector3 result = Vector3(v.x / div, v.y / div, v.z / div)
     return result
 end function
 
-private function Vector3DivideV(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3DivideV(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result = Vector3(v1.x/v2.x, v1.y/v2.y, v1.z/v2.z)
     return result
 end function
 
-private function Vector3Normalize(byval v as Vector3) as Vector3
+private function Vector3Normalize(v as Vector3) as Vector3
     dim as Vector3 result = v
     dim length as single
     dim ilength as single
@@ -210,14 +210,14 @@ private function Vector3Normalize(byval v as Vector3) as Vector3
     return result
 end function
 
-private sub Vector3OrthoNormalize(byval v1 as Vector3 ptr, byval v2 as Vector3 ptr)
+private sub Vector3OrthoNormalize(v1 as Vector3 ptr, v2 as Vector3 ptr)
     (*v1) = Vector3Normalize(*v1)
     dim as Vector3 vn = Vector3CrossProduct(*v1, *v2)
     vn = Vector3Normalize(vn)
     (*v2) = Vector3CrossProduct(vn, *v1)
 end sub
 
-private function Vector3Transform(byval v as Vector3, byval mat as Matrix) as Vector3
+private function Vector3Transform(v as Vector3, mat as Matrix) as Vector3
     dim as Vector3 result
     dim x as single = v.x
     dim y as single = v.y
@@ -228,7 +228,7 @@ private function Vector3Transform(byval v as Vector3, byval mat as Matrix) as Ve
     return result
 end function
 
-private function Vector3RotateByQuaternion(byval v as Vector3, byval q as Quaternion) as Vector3
+private function Vector3RotateByQuaternion(v as Vector3, q as Quaternion) as Vector3
     dim as Vector3 result
     result.x = ((v.x * ((((q.x * q.x) + (q.w * q.w)) - (q.y * q.y)) - (q.z * q.z))) + (v.y * (((2 * q.x) * q.y) - ((2 * q.w) * q.z)))) + (v.z * (((2 * q.x) * q.z) + ((2 * q.w) * q.y)))
     result.y = ((v.x * (((2 * q.w) * q.z) + ((2 * q.x) * q.y))) + (v.y * ((((q.w * q.w) - (q.x * q.x)) + (q.y * q.y)) - (q.z * q.z)))) + (v.z * ((((-2) * q.w) * q.x) + ((2 * q.y) * q.z)))
@@ -236,7 +236,7 @@ private function Vector3RotateByQuaternion(byval v as Vector3, byval q as Quater
     return result
 end function
 
-private function Vector3Lerp(byval v1 as Vector3, byval v2 as Vector3, byval amount as single) as Vector3
+private function Vector3Lerp(v1 as Vector3, v2 as Vector3, amount as single) as Vector3
     dim as Vector3 result
     result.x = v1.x + (amount * (v2.x - v1.x))
     result.y = v1.y + (amount * (v2.y - v1.y))
@@ -244,7 +244,7 @@ private function Vector3Lerp(byval v1 as Vector3, byval v2 as Vector3, byval amo
     return result
 end function
 
-private function Vector3Reflect(byval v as Vector3, byval normal as Vector3) as Vector3
+private function Vector3Reflect(v as Vector3, normal as Vector3) as Vector3
     dim as Vector3 result
     dim dotProduct as single = Vector3DotProduct(v, normal)
     result.x = v.x - ((2.0 * normal.x) * dotProduct)
@@ -253,7 +253,7 @@ private function Vector3Reflect(byval v as Vector3, byval normal as Vector3) as 
     return result
 end function
 
-private function Vector3Min(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3Min(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result
     result.x = fminf(v1.x, v2.x)
     result.y = fminf(v1.y, v2.y)
@@ -261,7 +261,7 @@ private function Vector3Min(byval v1 as Vector3, byval v2 as Vector3) as Vector3
     return result
 end function
 
-private function Vector3Max(byval v1 as Vector3, byval v2 as Vector3) as Vector3
+private function Vector3Max(v1 as Vector3, v2 as Vector3) as Vector3
     dim as Vector3 result
     result.x = fmaxf(v1.x, v2.x)
     result.y = fmaxf(v1.y, v2.y)
@@ -269,7 +269,7 @@ private function Vector3Max(byval v1 as Vector3, byval v2 as Vector3) as Vector3
     return result
 end function
 
-private function Vector3Barycenter(byval p as Vector3, byval a as Vector3, byval b as Vector3, byval c as Vector3) as Vector3
+private function Vector3Barycenter(p as Vector3, a as Vector3, b as Vector3, c as Vector3) as Vector3
     dim as Vector3 v0 = Vector3Subtract(b, a)
     dim as Vector3 v1 = Vector3Subtract(c, a)
     dim as Vector3 v2 = Vector3Subtract(p, a)
@@ -286,7 +286,7 @@ private function Vector3Barycenter(byval p as Vector3, byval a as Vector3, byval
     return result
 end function
 
-private function Vector3ToFloatV(byval v as Vector3) as float3
+private function Vector3ToFloatV(v as Vector3) as float3
     dim buffer as float3
     buffer.v(0) = v.x
     buffer.v(1) = v.y
@@ -294,7 +294,7 @@ private function Vector3ToFloatV(byval v as Vector3) as float3
     return buffer
 end function
 
-private function MatrixDeterminant(byval mat as Matrix) as single
+private function MatrixDeterminant(mat as Matrix) as single
     dim result as single
     dim a00 as single = mat.m0
     dim a01 as single = mat.m1
@@ -316,12 +316,12 @@ private function MatrixDeterminant(byval mat as Matrix) as single
     return result
 end function
 
-private function MatrixTrace(byval mat as Matrix) as single
+private function MatrixTrace(mat as Matrix) as single
     dim result as single = ((mat.m0 + mat.m5) + mat.m10) + mat.m15
     return result
 end function
 
-private function MatrixTranspose(byval mat as Matrix) as Matrix
+private function MatrixTranspose(mat as Matrix) as Matrix
     dim as Matrix result
     result.m0 = mat.m0
     result.m1 = mat.m4
@@ -342,7 +342,7 @@ private function MatrixTranspose(byval mat as Matrix) as Matrix
     return result
 end function
 
-private function MatrixInvert(byval mat as Matrix) as Matrix
+private function MatrixInvert(mat as Matrix) as Matrix
     dim as Matrix result
     dim a00 as single = mat.m0
     dim a01 as single = mat.m1
@@ -392,7 +392,7 @@ private function MatrixInvert(byval mat as Matrix) as Matrix
     return result
 end function
 
-private function MatrixNormalize(byval mat as Matrix) as Matrix
+private function MatrixNormalize(mat as Matrix) as Matrix
     dim as Matrix result
     dim det as single = MatrixDeterminant(mat)
     result.m0 = mat.m0 / det
@@ -435,7 +435,7 @@ private function MatrixIdentity() as Matrix
     return result
 end function
 
-private function MatrixAdd(byval lefts as Matrix, byval rights as Matrix) as Matrix
+private function MatrixAdd(lefts as Matrix, rights as Matrix) as Matrix
     dim as Matrix result = MatrixIdentity()
     result.m0 = lefts.m0 + rights.m0
     result.m1 = lefts.m1 + rights.m1
@@ -456,7 +456,7 @@ private function MatrixAdd(byval lefts as Matrix, byval rights as Matrix) as Mat
     return result
 end function
 
-private function MatrixSubtract(byval lefts as Matrix, byval rights as Matrix) as Matrix
+private function MatrixSubtract(lefts as Matrix, rights as Matrix) as Matrix
     dim as Matrix result = MatrixIdentity()
     result.m0 = lefts.m0 - rights.m0
     result.m1 = lefts.m1 - rights.m1
@@ -477,7 +477,7 @@ private function MatrixSubtract(byval lefts as Matrix, byval rights as Matrix) a
     return result
 end function
 
-private function MatrixTranslate(byval x as single, byval y as single, byval z as single) as Matrix
+private function MatrixTranslate(x as single, y as single, z as single) as Matrix
     dim as Matrix result
     result.m0 = 1
     result.m1 = 0
@@ -498,7 +498,7 @@ private function MatrixTranslate(byval x as single, byval y as single, byval z a
     return result
 end function
 
-private function MatrixRotate(byval axis as Vector3, byval angle as single) as Matrix
+private function MatrixRotate(axis as Vector3, angle as single) as Matrix
     dim as Matrix result
     dim x as single = axis.x
     dim y as single = axis.y
@@ -532,7 +532,7 @@ private function MatrixRotate(byval axis as Vector3, byval angle as single) as M
     return result
 end function
 
-private function MatrixRotateXYZ(byval ang as Vector3) as Matrix
+private function MatrixRotateXYZ(ang as Vector3) as Matrix
     dim as Matrix result = MatrixIdentity()
     dim cosz as single = cosf(-ang.z)
     dim sinz as single = sinf(-ang.z)
@@ -552,7 +552,7 @@ private function MatrixRotateXYZ(byval ang as Vector3) as Matrix
     return result
 end function
 
-private function MatrixRotateX(byval angle as single) as Matrix
+private function MatrixRotateX(angle as single) as Matrix
     dim as Matrix result = MatrixIdentity()
     dim cosres as single = cosf(angle)
     dim sinres as single = sinf(angle)
@@ -563,7 +563,7 @@ private function MatrixRotateX(byval angle as single) as Matrix
     return result
 end function
 
-private function MatrixRotateY(byval angle as single) as Matrix
+private function MatrixRotateY(angle as single) as Matrix
     dim as Matrix result = MatrixIdentity()
     dim cosres as single = cosf(angle)
     dim sinres as single = sinf(angle)
@@ -574,7 +574,7 @@ private function MatrixRotateY(byval angle as single) as Matrix
     return result
 end function
 
-private function MatrixRotateZ(byval angle as single) as Matrix
+private function MatrixRotateZ(angle as single) as Matrix
     dim as Matrix result = MatrixIdentity()
     dim cosres as single = cosf(angle)
     dim sinres as single = sinf(angle)
@@ -585,7 +585,7 @@ private function MatrixRotateZ(byval angle as single) as Matrix
     return result
 end function
 
-private function MatrixScale(byval x as single, byval y as single, byval z as single) as Matrix
+private function MatrixScale(x as single, y as single, z as single) as Matrix
     dim as Matrix result
     result.m0 = x
     result.m1 = 0
@@ -606,7 +606,7 @@ private function MatrixScale(byval x as single, byval y as single, byval z as si
     return result
 end function
 
-private function MatrixMultiply(byval lefts as Matrix, byval rights as Matrix) as Matrix
+private function MatrixMultiply(lefts as Matrix, rights as Matrix) as Matrix
     dim as Matrix result
     result.m0 = (((lefts.m0 * rights.m0) + (lefts.m1 * rights.m4)) + (lefts.m2 * rights.m8)) + (lefts.m3 * rights.m12)
     result.m1 = (((lefts.m0 * rights.m1) + (lefts.m1 * rights.m5)) + (lefts.m2 * rights.m9)) + (lefts.m3 * rights.m13)
@@ -627,7 +627,7 @@ private function MatrixMultiply(byval lefts as Matrix, byval rights as Matrix) a
     return result
 end function
 
-private function MatrixFrustum(byval lefts as double, byval rights as double, byval bottom as double, byval top as double, byval near as double, byval far as double) as Matrix
+private function MatrixFrustum(lefts as double, rights as double, bottom as double, top as double, near as double, far as double) as Matrix
     dim as Matrix result
     dim rl as single = csng(rights - lefts)
     dim tb as single = csng(top - bottom)
@@ -651,14 +651,14 @@ private function MatrixFrustum(byval lefts as double, byval rights as double, by
     return result
 end function
 
-private function MatrixPerspective(byval fovy as double, byval aspect as double, byval near as double, byval far as double) as Matrix
+private function MatrixPerspective(fovy as double, aspect as double, near as double, far as double) as Matrix
     dim top as double = near * tan(fovy * 0.5)
     dim rights as double = top * aspect
     dim as Matrix result = MatrixFrustum(-rights, rights, -top, top, near, far)
     return result
 end function
 
-private function MatrixOrtho(byval lefts as double, byval rights as double, byval bottom as double, byval top as double, byval near as double, byval far as double) as Matrix
+private function MatrixOrtho(lefts as double, rights as double, bottom as double, top as double, near as double, far as double) as Matrix
     dim as Matrix result
     dim rl as single = csng(rights - lefts)
     dim tb as single = csng(top - bottom)
@@ -682,7 +682,7 @@ private function MatrixOrtho(byval lefts as double, byval rights as double, byva
     return result
 end function
 
-private function MatrixLookAt(byval eye as Vector3, byval target as Vector3, byval up as Vector3) as Matrix
+private function MatrixLookAt(eye as Vector3, target as Vector3, up as Vector3) as Matrix
     dim as Matrix result
     dim as Vector3 z = Vector3Subtract(eye, target)
     z = Vector3Normalize(z)
@@ -710,7 +710,7 @@ private function MatrixLookAt(byval eye as Vector3, byval target as Vector3, byv
     return result
 end function
 
-private function MatrixToFloatV(byval mat as Matrix) as float16
+private function MatrixToFloatV(mat as Matrix) as float16
     dim buffer as float16
     buffer.v(0) = mat.m0
     buffer.v(1) = mat.m1
@@ -736,12 +736,12 @@ private function QuaternionIdentity() as Quaternion
     return result
 end function
 
-private function QuaternionLength(byval q as Quaternion) as single
+private function QuaternionLength(q as Quaternion) as single
     dim result as single = csng(sqrt((((q.x * q.x) + (q.y * q.y)) + (q.z * q.z)) + (q.w * q.w)))
     return result
 end function
 
-private function QuaternionNormalize(byval q as Quaternion) as Quaternion
+private function QuaternionNormalize(q as Quaternion) as Quaternion
     dim as Quaternion result
     dim length as single
     dim ilength as single
@@ -757,7 +757,7 @@ private function QuaternionNormalize(byval q as Quaternion) as Quaternion
     return result
 end function
 
-private function QuaternionInvert(byval q as Quaternion) as Quaternion
+private function QuaternionInvert(q as Quaternion) as Quaternion
     dim as Quaternion result = q
     dim length as single = QuaternionLength(q)
     dim lengthSq as single = length * length
@@ -771,7 +771,7 @@ private function QuaternionInvert(byval q as Quaternion) as Quaternion
     return result
 end function
 
-private function QuaternionMultiply(byval q1 as Quaternion, byval q2 as Quaternion) as Quaternion
+private function QuaternionMultiply(q1 as Quaternion, q2 as Quaternion) as Quaternion
     dim as Quaternion result
     dim qax as single = q1.x
     dim qay as single = q1.y
@@ -788,7 +788,7 @@ private function QuaternionMultiply(byval q1 as Quaternion, byval q2 as Quaterni
     return result
 end function
 
-private function QuaternionLerp(byval q1 as Quaternion, byval q2 as Quaternion, byval amount as single) as Quaternion
+private function QuaternionLerp(q1 as Quaternion, q2 as Quaternion, amount as single) as Quaternion
     dim as Quaternion result
     result.x = q1.x + (amount * (q2.x - q1.x))
     result.y = q1.y + (amount * (q2.y - q1.y))
@@ -797,13 +797,13 @@ private function QuaternionLerp(byval q1 as Quaternion, byval q2 as Quaternion, 
     return result
 end function
 
-private function QuaternionNlerp(byval q1 as Quaternion, byval q2 as Quaternion, byval amount as single) as Quaternion
+private function QuaternionNlerp(q1 as Quaternion, q2 as Quaternion, amount as single) as Quaternion
     dim as Quaternion result = QuaternionLerp(q1, q2, amount)
     result = QuaternionNormalize(result)
     return result
 end function
 
-private function QuaternionSlerp(byval q1 as Quaternion, byval q2 as Quaternion, byval amount as single) as Quaternion
+private function QuaternionSlerp(q1 as Quaternion, q2 as Quaternion, amount as single) as Quaternion
     dim as Quaternion result
     dim cosHalfTheta as single = (((q1.x * q2.x) + (q1.y * q2.y)) + (q1.z * q2.z)) + (q1.w * q2.w)
     if fabs(cosHalfTheta) >= 1.0 then
@@ -830,7 +830,7 @@ private function QuaternionSlerp(byval q1 as Quaternion, byval q2 as Quaternion,
     return result
 end function
 
-private function QuaternionFromVector3ToVector3(byval from as Vector3, byval tos as Vector3) as Quaternion
+private function QuaternionFromVector3ToVector3(from as Vector3, tos as Vector3) as Quaternion
     dim as Quaternion result
     dim cos2Theta as single = Vector3DotProduct(from, tos)
     dim as Vector3 cross = Vector3CrossProduct(from, tos)
@@ -842,7 +842,7 @@ private function QuaternionFromVector3ToVector3(byval from as Vector3, byval tos
     return result
 end function
 
-private function QuaternionFromMatrix(byval mat as Matrix) as Quaternion
+private function QuaternionFromMatrix(mat as Matrix) as Quaternion
     dim as Quaternion result
     dim trace as single = MatrixTrace(mat)
     if trace > 0.0 then
@@ -882,7 +882,7 @@ private function QuaternionFromMatrix(byval mat as Matrix) as Quaternion
     return result
 end function
 
-private function QuaternionToMatrix(byval q as Quaternion) as Matrix
+private function QuaternionToMatrix(q as Quaternion) as Matrix
     dim as Matrix result
     dim x as single = q.x
     dim y as single = q.y
@@ -921,7 +921,7 @@ private function QuaternionToMatrix(byval q as Quaternion) as Matrix
     return result
 end function
 
-private function QuaternionFromAxisAngle(byval axis as Vector3, byval angle as single) as Quaternion
+private function QuaternionFromAxisAngle(axis as Vector3, angle as single) as Quaternion
     dim as Quaternion result = Quaternion(0,0,0,1)
     if Vector3Length(axis) <> 0.0 then
         angle *= 0.5f
@@ -937,7 +937,7 @@ private function QuaternionFromAxisAngle(byval axis as Vector3, byval angle as s
     return result
 end function
 
-private sub QuaternionToAxisAngle(byval q as Quaternion, byval outAxis as Vector3 ptr, byval outAngle as single ptr)
+private sub QuaternionToAxisAngle(q as Quaternion, outAxis as Vector3 ptr, outAngle as single ptr)
     if fabs(q.w) > 1.0 then
         q = QuaternionNormalize(q)
     end if
@@ -956,7 +956,7 @@ private sub QuaternionToAxisAngle(byval q as Quaternion, byval outAxis as Vector
     (*outAngle) = resAngle
 end sub
 
-private function QuaternionFromEuler(byval roll as single, byval pitch as single, byval yaw as single) as Quaternion
+private function QuaternionFromEuler(roll as single, pitch as single, yaw as single) as Quaternion
     dim as Quaternion q
     dim x0 as single = cosf(roll * 0.5f)
     dim x1 as single = sinf(roll * 0.5f)
@@ -971,7 +971,7 @@ private function QuaternionFromEuler(byval roll as single, byval pitch as single
     return q
 end function
 
-private function QuaternionToEuler(byval q as Quaternion) as Vector3
+private function QuaternionToEuler(q as Quaternion) as Vector3
     dim as Vector3 result
     dim x0 as single = 2.0 * ((q.w * q.x) + (q.y * q.z))
     dim x1 as single = 1.0 - (2.0 * ((q.x * q.x) + (q.y * q.y)))
@@ -986,7 +986,7 @@ private function QuaternionToEuler(byval q as Quaternion) as Vector3
     return result
 end function
 
-private function QuaternionTransform(byval q as Quaternion, byval mat as Matrix) as Quaternion
+private function QuaternionTransform(q as Quaternion, mat as Matrix) as Quaternion
     dim as Quaternion result
     result.x = (((mat.m0 * q.x) + (mat.m4 * q.y)) + (mat.m8 * q.z)) + (mat.m12 * q.w)
     result.y = (((mat.m1 * q.x) + (mat.m5 * q.y)) + (mat.m9 * q.z)) + (mat.m13 * q.w)
