@@ -8,7 +8,7 @@
 '       - Written in plain C code (C99) in PascalCase/camelCase notation
 '       - Hardware accelerated with OpenGL (1.1, 2.1, 3.3 or ES2 - choose at compile)
 '       - Unique OpenGL abstraction layer (usable as standalone module): [rlgl]
-'       - Powerful fonts module (XNA SpriteFonts, BMFonts, TTF)
+'       - Multiple Fonts formats supported (TTF, XNA fonts, AngelCode fonts)
 '       - Outstanding texture formats support, including compressed formats (DXT, ETC, ASTC)
 '       - Full 3d support for 3d Shapes, Models, Billboards, Heightmaps and more!
 '       - Flexible Materials system, supporting classic maps and PBR maps
@@ -91,8 +91,8 @@ const RAD2DEG = 180.0f / PI
 const MAX_TOUCH_POINTS = 10
 #define RL_MALLOC(sz) malloc(sz)
 #define RL_CALLOC(n, sz) calloc(n, sz)
-#define RL_REALLOC(n, sz) realloc(n, sz)
-#define RL_FREE(p) free(p)
+#define RL_REALLOC(ptr, sz) realloc(ptr, sz)
+#define RL_FREE(ptr) free(ptr)
 
 #define LIGHTGRAY  Color( 200, 200, 200, 255 )   ' Light Gray
 #define GRAY       Color( 130, 130, 130, 255 )   ' Gray
@@ -120,6 +120,11 @@ const MAX_TOUCH_POINTS = 10
 #define BLANK      Color( 0, 0, 0, 0 )           ' Blank (Transparent)
 #define MAGENTA    Color( 255, 0, 255, 255 )     ' Magenta
 #define RAYWHITE   Color( 245, 245, 245, 255 )   ' My own White (raylib logo)
+
+#define FormatText  TextFormat
+#define SubText     TextSubtext
+#define ShowWindow  UnhideWindow
+#define LoadText    LoadFileText
 
 type Vector2
 	x as single
@@ -785,7 +790,7 @@ enum
 	NPT_3PATCH_HORIZONTAL
 end enum
 
-type TraceLogCallback as sub(byval logType as long, byval text as const zstring ptr, byval args as va_list)
+type TraceLogCallback as sub(logType as long, text as const zstring ptr, args as va_list)
 declare sub InitWindow(byval width as long, byval height as long, byval title as const zstring ptr)
 declare function WindowShouldClose() as boolean
 declare sub CloseWindow()
@@ -793,9 +798,9 @@ declare function IsWindowReady() as boolean
 declare function IsWindowMinimized() as boolean
 declare function IsWindowResized() as boolean
 declare function IsWindowHidden() as boolean
+declare function IsWindowFullscreen() as boolean
 declare sub ToggleFullscreen()
 declare sub UnhideWindow()
-declare sub ShowWindow alias "UnhideWindow"()
 declare sub HideWindow()
 declare sub SetWindowIcon(byval image as Image)
 declare sub SetWindowTitle(byval title as const zstring ptr)
@@ -856,6 +861,10 @@ declare sub SetTraceLogCallback(byval callback as TraceLogCallback)
 declare sub TraceLog(byval logType as long, byval text as const zstring ptr, ...)
 declare sub TakeScreenshot(byval fileName as const zstring ptr)
 declare function GetRandomValue(byval min as long, byval max as long) as long
+declare function LoadFileData(byval fileName as const zstring ptr, byval bytesRead as ulong ptr) as ubyte ptr
+declare sub SaveFileData(byval fileName as const zstring ptr, byval data as any ptr, byval bytesToWrite as ulong)
+declare function LoadFileText(byval fileName as const zstring ptr) as zstring ptr
+declare sub SaveFileText(byval fileName as const zstring ptr, byval text as zstring ptr)
 declare function FileExists(byval fileName as const zstring ptr) as boolean
 declare function IsFileExtension(byval fileName as const zstring ptr, byval ext as const zstring ptr) as boolean
 declare function DirectoryExists(byval dirPath as const zstring ptr) as boolean
@@ -874,8 +883,8 @@ declare sub ClearDroppedFiles()
 declare function GetFileModTime(byval fileName as const zstring ptr) as clong
 declare function CompressData(byval data as ubyte ptr, byval dataLength as long, byval compDataLength as long ptr) as ubyte ptr
 declare function DecompressData(byval compData as ubyte ptr, byval compDataLength as long, byval dataLength as long ptr) as ubyte ptr
-declare sub StorageSaveValue(byval position as long, byval value as long)
-declare function StorageLoadValue(byval position as long) as long
+declare sub SaveStorageValue(byval position as ulong, byval value as long)
+declare function LoadStorageValue(byval position as ulong) as long
 declare sub OpenURL(byval url as const zstring ptr)
 declare function IsKeyPressed(byval key as long) as boolean
 declare function IsKeyDown(byval key as long) as boolean
@@ -956,7 +965,6 @@ declare sub DrawTriangleFan(byval points as Vector2 ptr, byval numPoints as long
 declare sub DrawTriangleStrip(byval points as Vector2 ptr, byval pointsCount as long, byval color as Color)
 declare sub DrawPoly(byval center as Vector2, byval sides as long, byval radius as single, byval rotation as single, byval color as Color)
 declare sub DrawPolyLines(byval center as Vector2, byval sides as long, byval radius as single, byval rotation as single, byval color as Color)
-declare sub SetShapesTexture(byval texture as Texture2D, byval source as Rectangle)
 declare function CheckCollisionRecs(byval rec1 as Rectangle, byval rec2 as Rectangle) as boolean
 declare function CheckCollisionCircles(byval center1 as Vector2, byval radius1 as single, byval center2 as Vector2, byval radius2 as single) as boolean
 declare function CheckCollisionCircleRec(byval center as Vector2, byval radius as single, byval rec as Rectangle) as boolean
@@ -968,24 +976,23 @@ declare function LoadImage(byval fileName as const zstring ptr) as Image
 declare function LoadImageEx(byval pixels as Color ptr, byval width as long, byval height as long) as Image
 declare function LoadImagePro(byval data as any ptr, byval width as long, byval height as long, byval format as long) as Image
 declare function LoadImageRaw(byval fileName as const zstring ptr, byval width as long, byval height as long, byval format as long, byval headerSize as long) as Image
+declare sub UnloadImage(byval image as Image)
 declare sub ExportImage(byval image as Image, byval fileName as const zstring ptr)
 declare sub ExportImageAsCode(byval image as Image, byval fileName as const zstring ptr)
-declare function LoadTexture(byval fileName as const zstring ptr) as Texture2D
-declare function LoadTextureFromImage(byval image as Image) as Texture2D
-declare function LoadTextureCubemap(byval image as Image, byval layoutType as long) as TextureCubemap
-declare function LoadRenderTexture(byval width as long, byval height as long) as RenderTexture2D
-declare sub UnloadImage(byval image as Image)
-declare sub UnloadTexture(byval texture as Texture2D)
-declare sub UnloadRenderTexture(byval target as RenderTexture2D)
 declare function GetImageData(byval image as Image) as Color ptr
 declare function GetImageDataNormalized(byval image as Image) as Vector4 ptr
-declare function GetImageAlphaBorder(byval image as Image, byval threshold as single) as Rectangle
-declare function GetPixelDataSize(byval width as long, byval height as long, byval format as long) as long
-declare function GetTextureData(byval texture as Texture2D) as Image
-declare function GetScreenData() as Image
-declare sub UpdateTexture(byval texture as Texture2D, byval pixels as const any ptr)
+declare function GenImageColor(byval width as long, byval height as long, byval color as Color) as Image
+declare function GenImageGradientV(byval width as long, byval height as long, byval top as Color, byval bottom as Color) as Image
+declare function GenImageGradientH(byval width as long, byval height as long, byval left as Color, byval right as Color) as Image
+declare function GenImageGradientRadial(byval width as long, byval height as long, byval density as single, byval inner as Color, byval outer as Color) as Image
+declare function GenImageChecked(byval width as long, byval height as long, byval checksX as long, byval checksY as long, byval col1 as Color, byval col2 as Color) as Image
+declare function GenImageWhiteNoise(byval width as long, byval height as long, byval factor as single) as Image
+declare function GenImagePerlinNoise(byval width as long, byval height as long, byval offsetX as long, byval offsetY as long, byval scale as single) as Image
+declare function GenImageCellular(byval width as long, byval height as long, byval tileSize as long) as Image
 declare function ImageCopy(byval image as Image) as Image
 declare function ImageFromImage(byval image as Image, byval rec as Rectangle) as Image
+declare function ImageText(byval text as const zstring ptr, byval fontSize as long, byval color as Color) as Image
+declare function ImageTextEx(byval font as Font, byval text as const zstring ptr, byval fontSize as single, byval spacing as single, byval tint as Color) as Image
 declare sub ImageToPOT(byval image as Image ptr, byval fillColor as Color)
 declare sub ImageFormat(byval image as Image ptr, byval newFormat as long)
 declare sub ImageAlphaMask(byval image as Image ptr, byval alphaMask as Image)
@@ -998,14 +1005,6 @@ declare sub ImageResizeNN(byval image as Image ptr, byval newWidth as long, byva
 declare sub ImageResizeCanvas(byval image as Image ptr, byval newWidth as long, byval newHeight as long, byval offsetX as long, byval offsetY as long, byval color as Color)
 declare sub ImageMipmaps(byval image as Image ptr)
 declare sub ImageDither(byval image as Image ptr, byval rBpp as long, byval gBpp as long, byval bBpp as long, byval aBpp as long)
-declare function ImageExtractPalette(byval image as Image, byval maxPaletteSize as long, byval extractCount as long ptr) as Color ptr
-declare function ImageText(byval text as const zstring ptr, byval fontSize as long, byval color as Color) as Image
-declare function ImageTextEx(byval font as Font, byval text as const zstring ptr, byval fontSize as single, byval spacing as single, byval tint as Color) as Image
-declare sub ImageDraw(byval dst as Image ptr, byval src as Image, byval srcRec as Rectangle, byval dstRec as Rectangle, byval tint as Color)
-declare sub ImageDrawRectangle(byval dst as Image ptr, byval rec as Rectangle, byval color as Color)
-declare sub ImageDrawRectangleLines(byval dst as Image ptr, byval rec as Rectangle, byval thick as long, byval color as Color)
-declare sub ImageDrawText(byval dst as Image ptr, byval position as Vector2, byval text as const zstring ptr, byval fontSize as long, byval color as Color)
-declare sub ImageDrawTextEx(byval dst as Image ptr, byval position as Vector2, byval font as Font, byval text as const zstring ptr, byval fontSize as single, byval spacing as single, byval color as Color)
 declare sub ImageFlipVertical(byval image as Image ptr)
 declare sub ImageFlipHorizontal(byval image as Image ptr)
 declare sub ImageRotateCW(byval image as Image ptr)
@@ -1016,14 +1015,31 @@ declare sub ImageColorGrayscale(byval image as Image ptr)
 declare sub ImageColorContrast(byval image as Image ptr, byval contrast as single)
 declare sub ImageColorBrightness(byval image as Image ptr, byval brightness as long)
 declare sub ImageColorReplace(byval image as Image ptr, byval color as Color, byval replace as Color)
-declare function GenImageColor(byval width as long, byval height as long, byval color as Color) as Image
-declare function GenImageGradientV(byval width as long, byval height as long, byval top as Color, byval bottom as Color) as Image
-declare function GenImageGradientH(byval width as long, byval height as long, byval left as Color, byval right as Color) as Image
-declare function GenImageGradientRadial(byval width as long, byval height as long, byval density as single, byval inner as Color, byval outer as Color) as Image
-declare function GenImageChecked(byval width as long, byval height as long, byval checksX as long, byval checksY as long, byval col1 as Color, byval col2 as Color) as Image
-declare function GenImageWhiteNoise(byval width as long, byval height as long, byval factor as single) as Image
-declare function GenImagePerlinNoise(byval width as long, byval height as long, byval offsetX as long, byval offsetY as long, byval scale as single) as Image
-declare function GenImageCellular(byval width as long, byval height as long, byval tileSize as long) as Image
+declare function ImageExtractPalette(byval image as Image, byval maxPaletteSize as long, byval extractCount as long ptr) as Color ptr
+declare function GetImageAlphaBorder(byval image as Image, byval threshold as single) as Rectangle
+declare sub ImageClearBackground(byval dst as Image ptr, byval color as Color)
+declare sub ImageDrawPixel(byval dst as Image ptr, byval posX as long, byval posY as long, byval color as Color)
+declare sub ImageDrawPixelV(byval dst as Image ptr, byval position as Vector2, byval color as Color)
+declare sub ImageDrawLine(byval dst as Image ptr, byval startPosX as long, byval startPosY as long, byval endPosX as long, byval endPosY as long, byval color as Color)
+declare sub ImageDrawLineV(byval dst as Image ptr, byval start as Vector2, byval end as Vector2, byval color as Color)
+declare sub ImageDrawCircle(byval dst as Image ptr, byval centerX as long, byval centerY as long, byval radius as long, byval color as Color)
+declare sub ImageDrawCircleV(byval dst as Image ptr, byval center as Vector2, byval radius as long, byval color as Color)
+declare sub ImageDrawRectangle(byval dst as Image ptr, byval posX as long, byval posY as long, byval width as long, byval height as long, byval color as Color)
+declare sub ImageDrawRectangleV(byval dst as Image ptr, byval position as Vector2, byval size as Vector2, byval color as Color)
+declare sub ImageDrawRectangleRec(byval dst as Image ptr, byval rec as Rectangle, byval color as Color)
+declare sub ImageDrawRectangleLines(byval dst as Image ptr, byval rec as Rectangle, byval thick as long, byval color as Color)
+declare sub ImageDraw(byval dst as Image ptr, byval src as Image, byval srcRec as Rectangle, byval dstRec as Rectangle, byval tint as Color)
+declare sub ImageDrawText(byval dst as Image ptr, byval position as Vector2, byval text as const zstring ptr, byval fontSize as long, byval color as Color)
+declare sub ImageDrawTextEx(byval dst as Image ptr, byval position as Vector2, byval font as Font, byval text as const zstring ptr, byval fontSize as single, byval spacing as single, byval color as Color)
+declare function LoadTexture(byval fileName as const zstring ptr) as Texture2D
+declare function LoadTextureFromImage(byval image as Image) as Texture2D
+declare function LoadTextureCubemap(byval image as Image, byval layoutType as long) as TextureCubemap
+declare function LoadRenderTexture(byval width as long, byval height as long) as RenderTexture2D
+declare sub UnloadTexture(byval texture as Texture2D)
+declare sub UnloadRenderTexture(byval target as RenderTexture2D)
+declare sub UpdateTexture(byval texture as Texture2D, byval pixels as const any ptr)
+declare function GetTextureData(byval texture as Texture2D) as Image
+declare function GetScreenData() as Image
 declare sub GenTextureMipmaps(byval texture as Texture2D ptr)
 declare sub SetTextureFilter(byval texture as Texture2D, byval filterMode as long)
 declare sub SetTextureWrap(byval texture as Texture2D, byval wrapMode as long)
@@ -1034,6 +1050,7 @@ declare sub DrawTextureRec(byval texture as Texture2D, byval sourceRec as Rectan
 declare sub DrawTextureQuad(byval texture as Texture2D, byval tiling as Vector2, byval offset as Vector2, byval quad as Rectangle, byval tint as Color)
 declare sub DrawTexturePro(byval texture as Texture2D, byval sourceRec as Rectangle, byval destRec as Rectangle, byval origin as Vector2, byval rotation as single, byval tint as Color)
 declare sub DrawTextureNPatch(byval texture as Texture2D, byval nPatchInfo as NPatchInfo, byval destRec as Rectangle, byval origin as Vector2, byval rotation as single, byval tint as Color)
+declare function GetPixelDataSize(byval width as long, byval height as long, byval format as long) as long
 declare function GetFontDefault() as Font
 declare function LoadFont(byval fileName as const zstring ptr) as Font
 declare function LoadFontEx(byval fileName as const zstring ptr, byval fontSize as long, byval fontChars as long ptr, byval charsCount as long) as Font
@@ -1054,9 +1071,7 @@ declare function TextCopy(byval dst as zstring ptr, byval src as const zstring p
 declare function TextIsEqual(byval text1 as const zstring ptr, byval text2 as const zstring ptr) as boolean
 declare function TextLength(byval text as const zstring ptr) as ulong
 declare function TextFormat(byval text as const zstring ptr, ...) as const zstring ptr
-declare function FormatText alias "TextFormat"(byval text as const zstring ptr, ...) as const zstring ptr
 declare function TextSubtext(byval text as const zstring ptr, byval position as long, byval length as long) as const zstring ptr
-declare function SubText alias "TextSubtext"(byval text as const zstring ptr, byval position as long, byval length as long) as const zstring ptr
 declare function TextReplace(byval text as zstring ptr, byval replace as const zstring ptr, byval by as const zstring ptr) as zstring ptr
 declare function TextInsert(byval text as const zstring ptr, byval insert as const zstring ptr, byval position as long) as zstring ptr
 declare function TextJoin(byval textList as const zstring ptr ptr, byval count as long, byval delimiter as const zstring ptr) as const zstring ptr
@@ -1133,12 +1148,14 @@ declare function CheckCollisionRayBox(byval ray as Ray, byval box as BoundingBox
 declare function GetCollisionRayModel(byval ray as Ray, byval model as Model) as RayHitInfo
 declare function GetCollisionRayTriangle(byval ray as Ray, byval p1 as Vector3, byval p2 as Vector3, byval p3 as Vector3) as RayHitInfo
 declare function GetCollisionRayGround(byval ray as Ray, byval groundHeight as single) as RayHitInfo
-declare function LoadText(byval fileName as const zstring ptr) as zstring ptr
 declare function LoadShader(byval vsFileName as const zstring ptr, byval fsFileName as const zstring ptr) as Shader
 declare function LoadShaderCode(byval vsCode as const zstring ptr, byval fsCode as const zstring ptr) as Shader
 declare sub UnloadShader(byval shader as Shader)
 declare function GetShaderDefault() as Shader
 declare function GetTextureDefault() as Texture2D
+declare function GetShapesTexture() as Texture2D
+declare function GetShapesTextureRec() as Rectangle
+declare sub SetShapesTexture(byval texture as Texture2D, byval source as Rectangle)
 declare function GetShaderLocation(byval shader as Shader, byval uniformName as const zstring ptr) as long
 declare sub SetShaderValue(byval shader as Shader, byval uniformLoc as long, byval value as const any ptr, byval uniformType as long)
 declare sub SetShaderValueV(byval shader as Shader, byval uniformLoc as long, byval value as const any ptr, byval uniformType as long, byval count as long)
@@ -1214,5 +1231,6 @@ declare function IsAudioStreamPlaying(byval stream as AudioStream) as boolean
 declare sub StopAudioStream(byval stream as AudioStream)
 declare sub SetAudioStreamVolume(byval stream as AudioStream, byval volume as single)
 declare sub SetAudioStreamPitch(byval stream as AudioStream, byval pitch as single)
+declare sub SetAudioStreamBufferSizeDefault(byval size as long)
 
 end extern
