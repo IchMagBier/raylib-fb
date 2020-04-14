@@ -1,4 +1,4 @@
-# raylib-fb
+# raylib-fb v3.0
 
 FreeBasic bindings for [raylib](https://www.raylib.com/).
 
